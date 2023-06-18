@@ -1,0 +1,31 @@
+#!/bin/bash
+// To create two network namespaces and connect them using a veth (Virtual Ethernet) pair, we can follow these steps:
+
+// Step 1: Create the network namespaces:
+ip netns add networkNameSpace1
+ip netns add networkNameSpace2
+
+
+// Step 2: Create the veth pair and assign each end to a different namespace:
+ip link add vCable1 type veth peer name vCable2
+ip link set vCable1 netns networkNameSpace1
+ip link set vCable2 netns networkNameSpace2
+
+
+// Step 3: Configure IP addresses for the veth interfaces within each namespace:
+ip netns exec ns1 ip addr add 192.168.10.10/24 dev vCable1
+ip netns exec ns2 ip addr add 192.168.10.11/24 dev vCable2
+
+
+// Step 4: Enable the veth interfaces within each namespace:
+ip netns exec ns1 ip link set vCable1 up
+ip netns exec ns2 ip link set vCable2 up
+
+
+// Step 5: Enable IP forwarding on your host machine:
+sysctl net.ipv4.ip_forward=1
+
+
+// Step 6: Set up routing between the namespaces by adding appropriate routing entries:
+ip netns exec networkNameSpace1 ip route add default via 192.168.10.10
+ip netns exec networkNameSpace2 ip route add default via 192.168.10.11
