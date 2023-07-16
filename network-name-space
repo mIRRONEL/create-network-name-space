@@ -13,13 +13,13 @@ ip link set vCable2 netns networkNameSpace2
 
 
 // Step 3: Configure IP addresses for the veth interfaces within each namespace:
-ip netns exec ns1 ip addr add 192.168.10.10/24 dev vCable1
-ip netns exec ns2 ip addr add 192.168.10.11/24 dev vCable2
+ip netns exec networkNameSpace1 ip addr add 192.168.10.10/24 dev vCable1
+ip netns exec networkNameSpace2 ip addr add 192.168.10.11/24 dev vCable2
 
 
 // Step 4: Enable the veth interfaces within each namespace:
-ip netns exec ns1 ip link set vCable1 up
-ip netns exec ns2 ip link set vCable2 up
+ip netns exec networkNameSpace1 ip link set vCable1 up
+ip netns exec networkNameSpace2 ip link set vCable2 up
 
 
 // Step 5: Enable IP forwarding on your host machine:
